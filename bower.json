@@ -1,0 +1,27 @@
+{
+	"name": "stargatejs-device",
+	"description": "StargateJS local device",
+	"keywords": [
+		
+	],
+	"license": "MIT",
+	"authors": [{"name":"Mirco Cipriani","email":"mirco.cipriani@docomodigital.com"}],
+	"ignore": [
+		"!dist/",
+		"!CHANGELOG.md",
+		"!bower.json",
+		"!README.md",  
+		"**/*"
+	],
+	"main": "dist/main.js",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/D-Mobilelab/stargatejs-device"
+	},
+	"dependencies": {},
+	"devDependencies": {},
+	"moduleType": [
+		"globals"
+	],
+	"private": false
+}
