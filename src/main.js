@@ -5,5 +5,5 @@
  */
 
 module.exports = new function(){
-    this.foo = require('./foo/foo');
+    this.device = require('./device');
 };
