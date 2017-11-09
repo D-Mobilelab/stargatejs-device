@@ -494,6 +494,10 @@ var iaplight = (
         protectedInterface.__clean__ = function() {
             initPromise = null;
         };
+        
+        protectedInterface.name = function() {
+            return 'iaplight';
+        };
 
         return protectedInterface;
     }()
