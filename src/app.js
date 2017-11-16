@@ -14,35 +14,39 @@ var packageJson = require('../package.json');
 */
 
 
-/**
-* @ngdoc function
-* @name getCookie
-* @methodOf app
-* @private
-*
-* @description return value of requested cookie
-* @param {String} cookie name
-*
-* @return {String} cookie value
-*/
-function getCookie(name) {
-    var dc = document.cookie;
-    var prefix = name + '=';
-    var begin = dc.indexOf('; ' + prefix);
-    var end = '';
-    if (begin === -1) {
-        begin = dc.indexOf(prefix);
-        if (begin !== 0) {
-            return null;            
+function getCookieManager(w) {
+    w = w || window;
+    /**
+    * @ngdoc function
+    * @name getCookie
+    * @methodOf app
+    * @private
+    *
+    * @description return value of requested cookie
+    * @param {String} cookie name
+    *
+    * @return {String} cookie value
+    */
+    return function(name) {
+        var dc = w.document.cookie;
+        console.log('cookie: ' + dc);
+        var prefix = name + '=';
+        var begin = dc.indexOf('; ' + prefix);
+        var end = '';
+        if (begin === -1) {
+            begin = dc.indexOf(prefix);
+            if (begin !== 0) {
+                return null;            
+            }
+        } else {
+            end = dc.indexOf(';', begin);
+            begin += 2;
+            if (end === -1) {
+                end = dc.length;
+            }
         }
-    } else {
-        end = document.cookie.indexOf(';', begin);
-        begin += 2;
-        if (end === -1) {
-            end = dc.length;
-        }
-    }
-    return decodeURI(dc.substring(begin + prefix.length, end));
+        return decodeURI(dc.substring(begin + prefix.length, end));
+    };
 }
 
 var protectedInterface = {};
@@ -108,6 +112,8 @@ protectedInterface.initialize = function() {
             stargateError: '',
             connectionType: window.navigator.connection.type
         };
+
+        return appInformation;
     });
 
     return initPromise;
@@ -122,9 +128,10 @@ protectedInterface.initialize = function() {
 *
 * @return {Boolean} true when running as native app
 */
-module.exports.isHybrid = function() {
-    var protocol = window.location.protocol;
-    var search = window.location.search;
+module.exports.isHybrid = function(w) {
+    w = w || window;
+    var protocol = w.location.protocol;
+    var search = w.location.search;
     
     if (protocol === 'file' || protocol === 'cdvfile') {
         return true;
@@ -134,7 +141,7 @@ module.exports.isHybrid = function() {
         return true;        
     }
 
-    if (getCookie('hybrid')) {
+    if (getCookieManager(w)('hybrid')) {
         return true;
     }
     
@@ -184,19 +191,19 @@ module.exports.getVersion = function() {
  * @description getInformation
  *
  * @return {Promise} promise resolved with an object with these keys:
- *   cordova	Cordova version
- *   manufacturer	device manufacter
- *   model	device model
- *   platform	platform (Android, iOs, etc)
- *   deviceId	device UUID
- *   version	platform version
- *   packageVersion	package version
- *   packageName	package name ie: com.stargatejs.test
- *   packageBuild	package build number
- *   stargate	stargate version
- *   stargateModules	modules initialized
- *   stargateError	initialization error
- *   connectionType connection type
+ *   cordova - Cordova version
+ *   manufacturer - device manufacter
+ *   model - device model
+ *   platform - platform (Android, iOs, etc)
+ *   deviceId - device UUID
+ *   version - platform version
+ *   packageVersion - package version
+ *   packageName - package name ie: com.stargatejs.test
+ *   packageBuild - package build number
+ *   stargate - stargate version
+ *   stargateModules - modules initialized
+ *   stargateError - initialization error
+ *   connectionType - connection type
  */
 module.exports.getInformation = function() {
     return protectedInterface.initialize()
@@ -222,5 +229,5 @@ module.exports.openUrl = function(url) {
     }
 
     window.cordova.InAppBrowser.open(url, '_system');
-    return Promise.resolve();
+    return Promise.resolve(true);
 };

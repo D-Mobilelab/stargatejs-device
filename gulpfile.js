@@ -23,7 +23,7 @@ gulp.task('eslint', function() {
 
 gulp.task('test:single', shell.task(['./node_modules/karma/bin/karma start karma.conf.js']));
 
-gulp.task('test', ['test:single'], function(){
+gulp.task('test', ['eslint', 'test:single'], function(){
     if(argv.watch){
         browsersync({
             port: 3000,

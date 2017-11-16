@@ -647,6 +647,88 @@ describe("Stargate IAP Light", function() {
 		});
 	});
 
+    it("iaplight subscribeReceipt Android", function(done) {
+		
+        window.device.platform = "Android";
+        
+        appPackageName = "com.mycompany.myproduct";
+        iaplightSubscribeMockResult = iaplightSubscribeMockResultAndroid;
+
+        var init = iaplight.initialize({
+            productsIdAndroid: [iaplightProduct1.productId, iaplightProduct2.productId],
+            productsIdIos: [iaplightProduct1.productId, iaplightProduct2.productId],
+        });
+        init.catch(function(message) {
+			console.log("iaplight.init catch: "+message);
+            expect(message).not.toBeDefined();
+		    done();
+		});
+
+        expect(init.then).toBeDefined();
+
+		var res = iaplight.subscribeReceipt(iaplightProduct1.productId);
+        
+        expect(res.then).toBeDefined();
+        
+		res.catch(function(message) {
+			console.log("iaplight.getProductInfo catch: "+message);
+            expect(message).not.toBeDefined();
+		    done();
+		});
+		
+		res.then(function(result) {
+			//console.log("stargatePublic.socialShare catch: "+result);
+            expect(result).toEqual(iaplightSubscribeMockResultAndroid);
+            done();
+		});
+	});
+
+    it("iaplight subscribeReceipt iOS", function(done) {
+		
+        window.device.platform = "iOS";
+
+        appPackageName = "com.mycompany.myproduct";
+        iaplightSubscribeMockResult = iaplightSubscribeMockResultIos;
+
+        // set a purchaseDate 10 minutes in the past
+        iaplightReceiptBundle.inAppPurchases[0].purchaseDate =
+            iaplightReceiptBundle.inAppPurchases[0].originalPurchaseDate =
+            timePurchase10MinAgoStr;
+        
+        // set a subscriptionExpirationDate 10 minutes in the future
+        iaplightReceiptBundle.inAppPurchases[0].subscriptionExpirationDate = 
+            (new Date((+(new Date(timePurchase10MinAgo*1000)) + 1200 * 1000))).toISOString();
+
+
+        var init = iaplight.initialize({
+            productsIdAndroid: [iaplightProduct1.productId, iaplightProduct2.productId],
+            productsIdIos: [iaplightProduct1.productId, iaplightProduct2.productId],
+        });
+        init.catch(function(message) {
+			console.log("iaplight.init catch: "+message);
+            expect(message).not.toBeDefined();
+		    done();
+		});
+
+        expect(init.then).toBeDefined();
+
+		var res = iaplight.subscribeReceipt(iaplightProduct1.productId);
+        
+        expect(res.then).toBeDefined();
+        
+		res.catch(function(message) {
+			console.log("iaplight.getProductInfo catch: "+message);
+            expect(message).not.toBeDefined();
+		    done();
+		});
+		
+		res.then(function(result) {
+			console.log("stargatePublic.socialShare catch: "+result);
+            expect(result).toEqual(iaplightSubscribeMockResultIos);
+            done();
+		});
+    });
+    
     it("iaplight restore empty with false", function(done) {
 		
         window.device.platform = "Android";

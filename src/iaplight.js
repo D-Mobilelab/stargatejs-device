@@ -185,6 +185,30 @@ var iaplight = (
             return initPromise.then(subFunc);
         };
 
+        protectedInterface.subscribeReceipt = function(productId) {
+            
+            if (initPromise === null) {
+                return Promise.reject('Not initialized');
+            }
+
+            var subFunc = function() {
+                return window.inAppPurchase.subscribe(
+                    productId
+                )
+                .then(function(res){
+                    logModule.log('[IAPlight] subscribeReceipt ok', res);
+                    return res;
+                })
+                .catch(function(error){
+                    logModule.err('[IAPlight] subscribe KO: ' + error, error);
+                    throw error;
+                });
+            };
+
+            // wait for initPromise if it didn't complete
+            return initPromise.then(subFunc);
+        };
+
         protectedInterface.getExpireDate = function(productId) {
             
             if (initPromise === null) {

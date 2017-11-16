@@ -309,4 +309,32 @@ Mock.cordova_mock = {
     }
 };
 
+Mock.InAppBrowser = {
+    close: function (eventname) {
+        //
+    },
+    show: function (eventname) {
+        //
+    },
+    hide: function (eventname) {
+        //
+    },
+    addEventListener: function (eventname, f) {
+        //
+    },
+    removeEventListener: function (eventname, f) {
+        //
+    },
+
+    executeScript: function (injectDetails, cb) {
+        //
+    },
+
+    insertCSS: function (injectDetails, cb) {
+        //
+    },
+
+    open: function() {}
+};
+
 module.exports = Mock;
