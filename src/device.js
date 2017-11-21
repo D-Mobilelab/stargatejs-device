@@ -2,6 +2,7 @@ var axios = require('axios');
 var Promise = require('promise-polyfill');
 
 var File = require('./file');
+var logModule = require('./log');
 
 var Device = {};
 
@@ -39,10 +40,10 @@ Device.setDictionary = function(options) {
     .then(function(jsonContents) {
         var cb = options.saveDictionaryCb;
         cb(jsonContents);
-        console.log('[HybridDevice] Dictionary file loaded.');
+        logModule.log('[HybridDevice] Dictionary file loaded.');
     })
     .catch(function(error){
-        console.log('[HybridDevice] Dictionary file not found: ', error);
+        logModule.log('[HybridDevice] Dictionary file not found: ', error);
     });
 };
 
@@ -55,10 +56,10 @@ Device.setConfig = function(options) {
     .then(function(jsonContents) {
         var cb = options.saveConfigCb;
         cb(jsonContents);
-        console.log('[HybridDevice] Config file loaded.');
+        logModule.log('[HybridDevice] Config file loaded.');
     })
     .catch(function(error){
-        console.log('[HybridDevice] Config file not found: ', error);
+        logModule.log('[HybridDevice] Config file not found: ', error);
     });
 };
 
@@ -77,12 +78,12 @@ Device.updateDictionary = function(baseURL) {
         ]);
     })
     .then(function(result){
-        console.log('[HybridDevice] Saved dictionary file.', result);
+        logModule.log('[HybridDevice] Saved dictionary file.', result);
 
         return result[1];
     })
     .catch(function(error) {
-        console.error('[HybridDevice] Error updating dictionary file.', error);
+        logModule.err('[HybridDevice] Error updating dictionary file.', error);
     });
 };
 
@@ -101,12 +102,12 @@ Device.updateConfig = function(baseURL) {
         );
     })
     .then(function(result){
-        console.log('[HybridDevice] Saved config file.', result);
+        logModule.log('[HybridDevice] Saved config file.', result);
 
         return result[1];
     })
     .catch(function(error) {
-        console.error('[HybridDevice] Error updating config file.', error);
+        logModule.err('[HybridDevice] Error updating config file.', error);
     });
 };
 
@@ -134,11 +135,11 @@ Device.getCurrentRequestCountry = function(Config) {
         }
     )
     .then(function(result){
-        console.log('[HybridDevice] getCurrentRequestCountry(): ' + result.data.realCountry, result);
+        logModule.log('[HybridDevice] getCurrentRequestCountry(): ' + result.data.realCountry, result);
         return result.data.realCountry;
     })
     .catch(function(error) {
-        console.error('[HybridDevice] getCurrentRequestCountry() Error: ' + error, error);
+        logModule.err('[HybridDevice] getCurrentRequestCountry() Error: ' + error, error);
     });
 };
 
@@ -152,11 +153,11 @@ Device.loadCSS = function(Config) {
             + '&IS_STAGING=' + Config.IS_STAGING
     )
     .then(function(result){
-        console.log('[HybridDevice] loadCSS() Loaded CSS file.', result);
+        logModule.log('[HybridDevice] loadCSS() Loaded CSS file.', result);
         return result.data;
     })
     .catch(function(error) {
-        console.error('[HybridDevice] loadCSS() Error saving CSS file.', error);
+        logModule.err('[HybridDevice] loadCSS() Error saving CSS file.', error);
     });
 };
 
@@ -176,7 +177,7 @@ Device.injectExternalCSS = function(Config) {
     var cssId = Config.API_COUNTRY + Config.LESS_CSS_NAME;
     
     if (document.getElementById(cssId)) {
-        console.log('[HybridDevice] injectExternalCSS() CSS already available in DOM.', cssId);            
+        logModule.log('[HybridDevice] injectExternalCSS() CSS already available in DOM.', cssId);            
         return Promise.resolve({ loaded: true, url: cssUrl, id: cssId });
     }
 
@@ -200,7 +201,7 @@ Device.injectExternalCSS = function(Config) {
             try {
                 var temp = style.sheet.cssRules[0].styleSheet.cssRules.length; // <--- MAGIC: only populated when file is loaded
                 clearInterval(fi);
-                console.log('[HybridDevice] injectExternalCSS() CSS loaded in DOM.', style.sheet.cssRules);                        
+                logModule.log('[HybridDevice] injectExternalCSS() CSS loaded in DOM.', style.sheet.cssRules);                        
                 resolve({ loaded: true, url: cssUrl, id: cssId });
             } catch (e) {
                 // no op
@@ -231,13 +232,13 @@ Device.initHybridStatusFile = function() {
             JSON.stringify(status)
         )
         .then(function() {
-            console.log('[HybridDevice] initHybridStatusFile() FIRSTLOAD ');            
+            logModule.log('[HybridDevice] initHybridStatusFile() FIRSTLOAD ');            
             
             return false;
         })
         .catch(function(error2) {
             // FIXME: to do better handling of this error
-            console.error('[HybridDevice] initHybridStatusFile() cannot write file!', error2);
+            logModule.err('[HybridDevice] initHybridStatusFile() cannot write file!', error2);
 
             throw error2;
         });
@@ -338,12 +339,12 @@ Device.initHybridApp = function(options) {
                 if (!multiCountryMapHostnames[realCountry]) {
                     useCountry = options.config.HYBRID_MULTICOUNTRY_FALLBACK;
                 }
-                console.log('[HybridDevice] initHybridApp() getCurrentRequestCountry(): ' + realCountry + '; using: ' + useCountry, multiCountryMapHostnames);            
+                logModule.log('[HybridDevice] initHybridApp() getCurrentRequestCountry(): ' + realCountry + '; using: ' + useCountry, multiCountryMapHostnames);            
 
                 if (multiCountryMapHostnames[useCountry]) {
                     // get hostname to use for this country
                     var hostname = multiCountryMapHostnames[useCountry];
-                    console.log('[HybridDevice] initHybridApp() using baseurl: ' + hostname);
+                    logModule.log('[HybridDevice] initHybridApp() using baseurl: ' + hostname);
                     
                     // load and save config and dictionary
                     return Device.updateCachedConfigs(hostname)
@@ -379,7 +380,7 @@ Device.initHybridApp = function(options) {
         })
         .then(function() {
             var elapsedTime = Math.abs((startDate - Date.now()) / 1000);
-            console.log('[HybridDevice] initHybridApp() done, after s: ' + elapsedTime + '.');
+            logModule.log('[HybridDevice] initHybridApp() done, after s: ' + elapsedTime + '.');
         });
     });
 };
@@ -404,7 +405,7 @@ var getMfpSession = function(options) {
             tracking,
             jsonStruct;
 
-        console.log('[HybridDevice] getMfpSession() got response: ' + mfpResult.status, mfpResult);            
+        logModule.log('[HybridDevice] getMfpSession() got response: ' + mfpResult.status, mfpResult);            
         if (mfpResult.data.content.inappInfo) {
             jsonStruct = JSON.parse(mfpResult.data.content.inappInfo);                
             if (jsonStruct.extData) {
@@ -455,7 +456,7 @@ var getAppsFlyerSession = function(options) {
                 
                 var conversionData = afResult;
 
-                console.log('[HybridDevice] getAppsFlyerSession() afResult: ' + JSON.stringify(afResult), afResult);                    
+                logModule.log('[HybridDevice] getAppsFlyerSession() afResult: ' + JSON.stringify(afResult), afResult);                    
             
                 if (typeof conversionData === 'string') {
                     conversionData = JSON.parse(conversionData);
@@ -470,10 +471,10 @@ var getAppsFlyerSession = function(options) {
                         try {
                             var cb = options.af.conversionDataCallBack;
                             cb(conversionData);
-                            console.log('[HybridDevice] getAppsFlyerSession() conversionDataCallBack called with parameters: ' + JSON.stringify(conversionData), conversionData);
+                            logModule.log('[HybridDevice] getAppsFlyerSession() conversionDataCallBack called with parameters: ' + JSON.stringify(conversionData), conversionData);
                             
                         } catch (error) {
-                            console.error('[HybridDevice] getAppsFlyerSession() error calling conversionDataCallBack: ' + error, error);
+                            logModule.err('[HybridDevice] getAppsFlyerSession() error calling conversionDataCallBack: ' + error, error);
                         }
                     }, 10);
                 }
@@ -498,7 +499,7 @@ var getAppsFlyerSession = function(options) {
             },
             function(error){
                 // error callback
-                console.error('[HybridDevice] getAppsFlyerSession() error: ' + error, error);
+                logModule.err('[HybridDevice] getAppsFlyerSession() error: ' + error, error);
                 reject(new Error(error));
             }
         );
@@ -520,7 +521,7 @@ var getAppsFlyerSession = function(options) {
  * @param {options.af.fieldReturnUrl} - 
  * @param {options.af.devKey} - 
  * @param {options.af.appStoreAppId} - 
- * @param {options.af.conversionDataCallBack} - <Function>
+ * @param @deprecated {options.af.conversionDataCallBack} - <Function>
  * @returns {Promise} - Object{pony,returnUrl}
  */
 Device.getBrowserSession = function(options) {
@@ -580,12 +581,12 @@ Device.getBrowserSession = function(options) {
     )
     .then(function(result) {
         var elapsedTime = Math.abs((startDate - Date.now()) / 1000);
-        console.log('[HybridDevice] getBrowserSession() done, after s: ' + elapsedTime + '.', result);
+        logModule.log('[HybridDevice] getBrowserSession() done, after s: ' + elapsedTime + '.', result);
         return result;
     })
     .catch(function(error) {
         var elapsedTime = Math.abs((startDate - Date.now()) / 1000);
-        console.log('[HybridDevice] getBrowserSession() error/nodata: ' + error, error);
+        logModule.log('[HybridDevice] getBrowserSession() error/nodata: ' + error, error);
     });
 };
 

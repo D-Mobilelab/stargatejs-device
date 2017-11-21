@@ -43,14 +43,19 @@ gulp.task('coveralls', function(){
 
 gulp.task('webpack', function(){
     return gulp.src('src/main.js')
+    //.pipe(insert.append('\n\n/* stargatejs-device ' + version + ' */'))
     .pipe(webpack({
         output: {
-            filename: 'main.js',
+            filename: 'stargate.js',
             libraryTarget: 'umd',
-            library: 'stargatejs-device'
-        }
+            library: 'Stargate'
+        },
+        module: {
+            loaders: [
+                { test: /\.json$/, loader: "json-loader" }
+            ],
+        },
     }))
-    .pipe(insert.append('\n\n/* stargatejs-device ' + version + ' */'))
     .pipe(gulp.dest('dist/'));
 });
 
