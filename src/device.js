@@ -11,9 +11,6 @@ var configFileName = 'config.json';
 var statusFileName = 'status.json';
 var dictionariApi = '/v01/dictionary.getlist';
 
-// FIXME: this must be sent as a parameter
-var configApi = '/v01/config.getvars?keys=XXXXXFIXMEXXXX';
-
 Device.isRunningOnAndroid = function() {
     return window.device.platform === 'Android';
 };
@@ -87,7 +84,7 @@ Device.updateDictionary = function(baseURL) {
     });
 };
 
-Device.updateConfig = function(baseURL) {
+Device.updateConfig = function(baseURL, configApi) {
     return axios.get(baseURL + configApi)
     .then(function(response) {
 
@@ -111,10 +108,10 @@ Device.updateConfig = function(baseURL) {
     });
 };
 
-Device.updateCachedConfigs = function(baseURL) {
+Device.updateCachedConfigs = function(baseURL, configApi) {
     return Promise.all([
         Device.updateDictionary(baseURL),
-        Device.updateConfig(baseURL)
+        Device.updateConfig(baseURL, configApi)
     ])
     .then(function(result) {
         return {
@@ -347,7 +344,7 @@ Device.initHybridApp = function(options) {
                     logModule.log('[HybridDevice] initHybridApp() using baseurl: ' + hostname);
                     
                     // load and save config and dictionary
-                    return Device.updateCachedConfigs(hostname)
+                    return Device.updateCachedConfigs(hostname, options.configApi)
                     .then(function(resultUpdateCache) {
                         // use new config and dictionary
                         var cbConf = options.saveConfigCb;
@@ -368,7 +365,7 @@ Device.initHybridApp = function(options) {
             ])
             .then(function(){
                 // keep cached configs file updated for next load
-                Device.updateCachedConfigs(options.config.DEST_DOMAIN);
+                Device.updateCachedConfigs(options.config.DEST_DOMAIN, options.configApi);
 
                 return Device.injectExternalCSS(options.config);
             });
