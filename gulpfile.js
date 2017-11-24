@@ -8,6 +8,9 @@ var shell = require('gulp-shell');
 var argv = require('yargs').argv;
 var jsdoc = require('gulp-jsdoc3');
 var insert = require('gulp-insert');
+var karma = require('karma');
+var karmaConf = require('./karma.conf.js');
+
 var version = argv.version ? argv.version : 'temp';
 
 gulp.task('clean', function(){
@@ -21,7 +24,17 @@ gulp.task('eslint', function() {
     .pipe(eslint.failOnError());
 });
 
-gulp.task('test:single', shell.task(['./node_modules/karma/bin/karma start karma.conf.js']));
+gulp.task('test:tdd', function(done){
+    karmaConf.singleRun = false;
+    karmaConf.browsers = ['Chrome'];
+    
+	new karma.Server(karmaConf, done).start();
+});
+
+gulp.task('test:single', function(done){
+    
+	new karma.Server(karmaConf, done).start();
+});
 
 gulp.task('test', ['eslint', 'test:single'], function(){
     if(argv.watch){
