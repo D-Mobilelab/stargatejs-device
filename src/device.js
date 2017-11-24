@@ -24,9 +24,6 @@ Device.applicationStorage = function() {
     }
     return base;
 };
-Device.tempDirectory = function() {
-    return window.cordova.file.tempDirectory;
-};
 
 Device.setDictionary = function(options) {
     if (!options.saveDictionaryCb || typeof options.saveDictionaryCb !== 'function') {
@@ -306,11 +303,18 @@ Device.waitForConnection = function(options) {
 };
 
 Device.initHybridApp = function(options) {
+    if (typeof options !== 'object') {
+        return Promise.reject(new Error('Parameters error, missing options'));
+    }
+    if (typeof options.config !== 'object') {
+        return Promise.reject(new Error('Parameters error, missing options.config'));
+    }
+
     var isMultiCountry = options.config.HYBRID_ISMULTICOUNTRY;
     var multiCountryMapHostnames = options.config.HYBRID_MULTICOUNTRYMAP;
     var result;
     var startDate = Date.now();
-
+    
     if (!options.saveConfigCb || typeof options.saveConfigCb !== 'function') {
         return Promise.reject(new Error('Parameters error, missing saveConfigCb in options'));
     }
