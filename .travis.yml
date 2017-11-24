@@ -1,13 +1,20 @@
+dist: trusty
+
+addons:
+  chrome: stable
+
 language: node_js
 
 node_js:
   - "4"
 
 branches:
- only:
-   - master
+  only:
+    - master
 
 before_install:
+  - # start your web application and listen on `localhost`
+  - google-chrome-stable --headless --disable-gpu --remote-debugging-port=9222 http://localhost &
   - npm install -g gulp
   - npm install -g npm@3
   - npm -v

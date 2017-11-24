@@ -10,16 +10,15 @@ describe("Stargate app", function() {
     
     beforeEach(function() {
 		
-		window.device = Mock.spec_device_mock;
-        window.cordova = Mock.cordova_mock;
-        window.cordova.InAppBrowser = Mock.InAppBrowser;
-		window.StatusBar = Mock.statusbar_mock;
-		navigator.splashscreen = Mock.navigator_splashscreen_mock;
-        navigator.connection = Mock.navigator_connection_mock;
+		window.device = Object.assign({}, Mock.spec_device_mock);
+        window.cordova = Object.assign({}, Mock.cordova_mock);
+		window.StatusBar = Object.assign({}, Mock.statusbar_mock);
+		window.navigator.splashscreen = Object.assign({}, Mock.navigator_splashscreen_mock);
+        window.navigator.connection = Object.assign({}, Mock.navigator_connection_mock);
     });
     
     it("app openUrl no plugin", function(done) {
-		
+        
         window.cordova.InAppBrowser = undefined;
 
 		var res = app.openUrl('http://www.google.com');
@@ -152,7 +151,6 @@ describe("Stargate app", function() {
 
     it("app no plugin 1", function(done) {
         
-        var saveit = window.cordova.getAppVersion;
         window.cordova.getAppVersion = undefined;
 
         var res = app.getDeviceID();
@@ -162,21 +160,19 @@ describe("Stargate app", function() {
 		res.catch(function(message) {
 			console.log("app.getDeviceID catch: "+message);
             expect(message).toBeDefined();
-            window.cordova.getAppVersion = saveit;
 		    done();
 		});
 		
 		res.then(function(result) {
 			//console.log("stargatePublic.socialShare catch: "+result);
             expect(result).not.toBeDefined();
-            window.cordova.getAppVersion = saveit;
 		    done();
 		});
     });
 
     it("app no plugin 2", function(done) {
-        var saveit = window.navigator.connection;
-        window.navigator.connection = undefined;
+        
+        spyOn(app.testObject, 'getConnection').and.returnValue(undefined);
 
         var res = app.getDeviceID();
         
@@ -185,14 +181,12 @@ describe("Stargate app", function() {
 		res.catch(function(message) {
 			console.log("app.getDeviceID catch: "+message);
             expect(message).toBeDefined();
-            window.navigator.connection = saveit;
 		    done();
 		});
 		
 		res.then(function(result) {
 			//console.log("stargatePublic.socialShare catch: "+result);
             expect(result).not.toBeDefined();
-            window.navigator.connection = saveit;
 		    done();
 		});
     });
