@@ -1,47 +1,56 @@
 var path = require('path');
 
 // Karma configuration
-module.exports = function(config) {
-    config.set({
+module.exports = {
 
-        basePath: '.',
+    basePath: '.',
 
-        frameworks: ['jasmine'],
-        
-        files: ['src/**/*.test.js'],
+    frameworks: ['jasmine'],
+    
+    files: ['src/**/*.test.js'],
 
-        browsers: ['PhantomJS'],
+    //browsers: ['Chrome'],
+    browsers: ['ChromeHeadless'],
 
-        reporters: ['spec', 'coverage-istanbul'],
+    // cordovaSettings: {
+    //     platforms: ['android'],
+    //     mode: 'emulate',
+    //     hostip: '10.0.2.2',
+    //     target: '0468de2a213eae29',
+    //     plugins: [
+    //         'cordova-plugin-console'
+    //     ]
+    // },
 
-        preprocessors: {
-            'src/**/*.test.js': ['webpack']
-        },
+    reporters: ['spec', 'coverage-istanbul'],
 
-        coverageIstanbulReporter: {
-            reports: ['text-summary', 'lcov'],
-            fixWebpackSourcePaths: true,
-            type: 'lcov',
-            dir: 'test/report/'
-        },
+    preprocessors: {
+        'src/**/*.test.js': ['webpack']
+    },
 
-        webpack: {
-            module: {
-                rules: [
-                    {
-                        test: /\.js$/,
-                        include: path.resolve('src/'),
-                        exclude: /\.test\.js$/,
-                        loader: 'istanbul-instrumenter-loader'
-                    }
-                ]
-            }
-        },
+    coverageIstanbulReporter: {
+        reports: ['text-summary', 'lcov'],
+        fixWebpackSourcePaths: true,
+        type: 'lcov',
+        dir: 'test/report/'
+    },
 
-        webpackMiddleware: {
-            stats: 'errors-only'
-        },
+    webpack: {
+        module: {
+            rules: [
+                {
+                    test: /\.js$/,
+                    include: path.resolve('src/'),
+                    exclude: /\.test\.js$/,
+                    loader: 'istanbul-instrumenter-loader'
+                }
+            ]
+        }
+    },
 
-        singleRun: true
-    });
+    webpackMiddleware: {
+        stats: 'errors-only'
+    },
+
+    singleRun: true
 };
