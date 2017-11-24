@@ -70,11 +70,15 @@ var appInformation = {
 
 var initPromise;
 
+protectedInterface.getConnection = function() {
+    return window.navigator.connection;
+};
+
 protectedInterface.initialize = function() {
     if (typeof window.cordova.getAppVersion === 'undefined') {
         return Promise.reject('[app] missing cordova plugin cordova-plugin-app-version!');
     }
-    if (typeof window.navigator.connection === 'undefined') {
+    if (typeof protectedInterface.getConnection() === 'undefined') {
         return Promise.reject('[app] missing cordova plugin cordova-plugin-network-information!');
     }
     if (typeof window.device === 'undefined') {
@@ -118,6 +122,8 @@ protectedInterface.initialize = function() {
 
     return initPromise;
 };
+
+module.exports.testObject = protectedInterface;
 
 /**
 * @ngdoc function
