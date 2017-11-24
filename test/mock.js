@@ -1,7 +1,7 @@
 var Promise = require('promise-polyfill');
 
 var Mock = {
-
+    
     spec_hybrid_conf_expected: {
         IAP: {
             id: 'stargate.test.spec.subscription',
@@ -245,9 +245,38 @@ var Mock = {
     navigator_connection_mock: {
         type: 'wifi',
         getInfo: function(cb, cbe){}
+    },
+
+    Connection: {
+        UNKNOWN: 'unknown',
+        ETHERNET: 'ethernet',
+        WIFI: 'wifi',
+        CELL_2G: '2g',
+        CELL_3G: '3g',
+        CELL_4G: '4g',
+        CELL: 'cellular',
+        NONE: 'none'
+    },
+
+    SimulateEvent: function(eventName, attrs, time, target){
+        var event = document.createEvent('CustomEvent');
+        var _target;
+    
+        if(target && target === 'window'){
+            _target = window;
+        }else{
+            _target = document;
+        }
+    
+        Object.keys(attrs).map(function(key) {
+            event[key] = attrs[key];
+            return false;
+        });
+        event.initEvent(eventName, true, true);
+        setTimeout(function(){
+            _target.dispatchEvent(event);
+        }, time || 1000);
     }
-
-
 };
 
 Mock.hostedwebapp_mock = {
@@ -306,35 +335,49 @@ Mock.cordova_mock = {
             };
         }
         return {};
+    },
+    InAppBrowser: {
+        close: function (eventname) {
+            //
+        },
+        show: function (eventname) {
+            //
+        },
+        hide: function (eventname) {
+            //
+        },
+        addEventListener: function (eventname, f) {
+            //
+        },
+        removeEventListener: function (eventname, f) {
+            //
+        },
+    
+        executeScript: function (injectDetails, cb) {
+            //
+        },
+    
+        insertCSS: function (injectDetails, cb) {
+            //
+        },
+    
+        open: function() {}
+    },
+    file: {
+        applicationDirectory: 'file:///android_asset/',
+        applicationStorageDirectory: 'file:///data/data/io.cordova.hellocordova/',
+        cacheDirectory: 'file:///data/data/io.cordova.hellocordova/cache/',
+        dataDirectory: 'file:///data/data/io.cordova.hellocordova/files/',
+        documentsDirectory: null,
+        externalApplicationStorageDirectory: 'file:///storage/emulated/0/Android/data/io.cordova.hellocordova/',
+        externalCacheDirectory: 'file:///storage/emulated/0/Android/data/io.cordova.hellocordova/cache/',
+        externalDataDirectory: 'file:///storage/emulated/0/Android/data/io.cordova.hellocordova/files/',
+        externalRootDirectory: 'file:///storage/emulated/0/',
+        sharedDirectory: null,
+        syncedDataDirectory: null,
+        tempDirectory: null
     }
 };
 
-Mock.InAppBrowser = {
-    close: function (eventname) {
-        //
-    },
-    show: function (eventname) {
-        //
-    },
-    hide: function (eventname) {
-        //
-    },
-    addEventListener: function (eventname, f) {
-        //
-    },
-    removeEventListener: function (eventname, f) {
-        //
-    },
-
-    executeScript: function (injectDetails, cb) {
-        //
-    },
-
-    insertCSS: function (injectDetails, cb) {
-        //
-    },
-
-    open: function() {}
-};
 
 module.exports = Mock;
