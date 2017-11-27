@@ -30,5 +30,5 @@ script:
   - gulp webpack
   - gulp eslint
   - gulp test
-  - # gulp coveralls
+  - gulp coveralls
   - gulp doc
