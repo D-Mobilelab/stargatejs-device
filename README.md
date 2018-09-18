@@ -6,7 +6,7 @@
 [![Bower version](https://badge.fury.io/bo/stargatejs-device.svg)](https://badge.fury.io/bo/stargatejs-device)
 [![GitHub version](https://badge.fury.io/gh/D-Mobilelab%2Fstargatejs-device.svg)](https://badge.fury.io/gh/D-Mobilelab%2Fstargatejs-device)
 [![NSP Status](https://nodesecurity.io/orgs/docomo-digital/projects/910ba047-b37d-4398-8fb0-79563f145c01/badge)](https://nodesecurity.io/orgs/docomo-digital/projects/910ba047-b37d-4398-8fb0-79563f145c01)
-[![Maintainability](https://api.codeclimate.com/v1/badges/25786c6a284c7a97919b/maintainability)](https://codeclimate.com/github/D-Mobilelab/stargatejs-device/maintainability)
+[![Maintainability](https://api.codeclimate.com/v1/badges/25786c6a284c7a97919b/maintainability)](https://codeclimate.com/github/D-Mobilelab/stargatejs-device/maintainability) [![Greenkeeper badge](https://badges.greenkeeper.io/D-Mobilelab/stargatejs-device.svg)](https://greenkeeper.io/)
 
 ## Installation
 
